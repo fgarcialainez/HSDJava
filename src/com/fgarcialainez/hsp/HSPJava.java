@@ -20,8 +20,11 @@
 package com.fgarcialainez.hsp;
 
 import java.io.BufferedInputStream;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.URL;
+import java.text.Normalizer;
 
 /**
  * Utility class that connects with some external services to retrieve historical
@@ -39,40 +42,41 @@ public class HSPJava
      */
     public static boolean retrieveStockDataFromInvertia(String ticker, String beginDate, String endDate, String xlsOutputFilename)
     {
-        boolean result = false;
+        boolean success = true;
         
         String xlsContent = "";
         String content;
         
         try
          {
-            byte[] buffer = new byte[4096];
-            
             String strURL = "http://www.invertia.com/inc/bolsa/ficha/excel.asp?FechaDesde=" + beginDate + "%2000:00&FechaHasta=" + endDate + "%2000:00&idtel=" + ticker;
             
             URL url = new URL(strURL);
  
             BufferedInputStream bis = new BufferedInputStream(url.openStream());
-            int bytesRead;
- 
-            while ((bytesRead = bis.read(buffer)) != -1)
-            {
-                content = new String(buffer, 0, bytesRead);
-                xlsContent = xlsContent + content;
-            }
+            BufferedReader br = new BufferedReader(new InputStreamReader(bis, "ISO-8859-1"));
+            
+            do{
+                content = br.readLine();
+                
+                if(content != null)
+                    xlsContent = xlsContent + content;
+            }while(content != null);
+            
+            xlsContent = Normalizer.normalize(xlsContent, Normalizer.Form.NFD);
+            xlsContent = xlsContent.replaceAll("\\p{InCombiningDiacriticalMarks}+", "");
             
             bis.close();
             
             PrintWriter out = new PrintWriter(xlsOutputFilename);
             out.println(xlsContent);
  
-            System.out.println(xlsContent);
- 
         } catch (Exception ex){
+            success = false;
             System.out.println("There has been a problem with invertia.com service. Exception received: " + ex.getMessage());
         }
         
-        return result;
+        return success;
     }
     
     /**

@@ -30,13 +30,13 @@ public class Main {
      */
     public static void main(String[] args) 
     {    
+        //RETRIEVE DATA FROM IBERDROLA BETWEEN FEB 23, 2010 TO APRIL 20, 2011. SAVE OUTPUT DATA ON FILE testIberdrola.xls
+        HSPJava.retrieveStockDataFromInvertia("RV011IBERDRO", "2010/2/23", "2011/4/20", "testIberdrola.xls");
+        
         //RETRIEVE DATA FROM BANCO SANTANDER BETWEEN MARCH 1, 2010 TO JAN 25, 2011. SAVE OUTPUT DATA ON FILE testSantander.xls
         HSPJava.retrieveStockDataFromInvertia("RV011BSCH", "2010/3/1", "2011/1/25", "testSantander.xls");
         
         //RETRIEVE DATA FROM TELEFONICA BETWEEN JAN 1, 2009 TO JAN 31, 2011. SAVE OUTPUT DATA ON FILE testTelefonica.xls
         HSPJava.retrieveStockDataFromInvertia("RV011TELEFON", "2009/1/1", "2011/1/31", "testTelefonica.xls");
-        
-        //RETRIEVE DATA FROM BBVA BETWEEN JAN 1, 2012 TO MAY 1, 2012. SAVE OUTPUT DATA ON FILE testBBVA.xls
-        HSPJava.retrieveStockDataFromInvertia("RV011BBV", "2012/1/1", "2012/5/1", "testBBVA.xls");
     }
 }
