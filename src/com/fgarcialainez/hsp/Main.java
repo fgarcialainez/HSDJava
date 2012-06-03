@@ -38,5 +38,14 @@ public class Main {
         
         //RETRIEVE DATA FROM TELEFONICA BETWEEN JAN 1, 2009 TO JAN 31, 2011. SAVE OUTPUT DATA ON FILE testTelefonica.xls
         HSPJava.retrieveStockDataFromInvertia("RV011TELEFON", "2009/1/1", "2011/1/31", "testTelefonica.xls");
+        
+        //RETRIEVE DATA FROM APPLE BETWEEN FEB 6, 2010 TO NOVEMBER 30, 2011. SAVE OUTPUT DATA ON FILE testApple.xls
+        HSPJava.retrieveStockDataFromYahooFinance("APPL", "2010-02-06", "2011-11-30", "testApple.csv");
+        
+        //RETRIEVE DATA FROM GOOGLE BETWEEN JAN 1, 2009 TO FEBRUARY 1, 2009. SAVE OUTPUT DATA ON FILE testGoogle.xls
+        HSPJava.retrieveStockDataFromYahooFinance("GOOG", "2009-01-01", "2009-02-01", "testGoogle.csv");
+        
+        //RETRIEVE DATA FROM SANTANDER BETWEEN MARCH 1, 2010 TO MARCH 1, 2011. SAVE OUTPUT DATA ON FILE testSantanderMC.xls
+        HSPJava.retrieveStockDataFromYahooFinance("SAN.MC", "2010-03-01", "2011-03-01", "testSantanderMC.csv");
     }
 }

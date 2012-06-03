@@ -23,12 +23,16 @@ import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.lang.String;
 import java.net.URL;
+import java.text.Format;
 import java.text.Normalizer;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 
 /**
- * Utility class that connects with some external services to retrieve historical
- * stock data from different services
+ * Class that connects with some external services to retrieve historical stock data
  * @author Felix Garcia Lainez
  */
 public class HSPJava 
@@ -36,9 +40,11 @@ public class HSPJava
     /**
      * Retrieves stock data from invertia.com in xls format
      * @param ticker Invertia stock ticker (i.e. RV011BSCH, RV011TELEFON, etc)
-     * @param beginDate The begin date
-     * @param endDate The end date
+     * @param beginDate The begin date with format YYYY/MM/DD
+     * @param endDate The end date with format YYYY/MM/DD
+     * @param xlsOutputFilename The name of the .xls to be created
      * @return true if success, else false
+     * @see http://www.invertia.com
      */
     public static boolean retrieveStockDataFromInvertia(String ticker, String beginDate, String endDate, String xlsOutputFilename)
     {
@@ -80,10 +86,61 @@ public class HSPJava
     }
     
     /**
-     * @TODO
-     * @return 
+     * Retrieves stock data from yahoo finance in csv format
+     * @param ticker Yahoo stock ticker (i.e. SAN.MC, TEF.MC, AAPL, etc)
+     * @param beginDate The begin date with format YYYY/MM/DD
+     * @param endDate The end date with format YYYY/MM/DD
+     * @param csvOutputFilename The name of the .csv to be created
+     * @return true if success, else false
      */
-    public static void retrieveStockDataFromYahooFinance()
+    public static boolean retrieveStockDataFromYahooFinance(String ticker, String beginDate, String endDate, String csvOutputFilename)
     {
+        boolean success = true;
+        
+        String csvContent = "";
+        String content;
+        
+        try
+        {
+            Format formatter = new SimpleDateFormat("yyyy-MM-dd");
+            
+            Date bDate = (Date)formatter.parseObject(beginDate);
+            Date eDate = (Date)formatter.parseObject(endDate);
+            
+            Calendar bDateCalendar = Calendar.getInstance();
+            Calendar eDateCalendar = Calendar.getInstance();
+            
+            bDateCalendar.setTime(bDate);
+            eDateCalendar.setTime(eDate);
+             
+            String strURL = "http://ichart.yahoo.com/table.csv?s=" + ticker + "&d=" + eDateCalendar.get(Calendar.MONTH) + "&e=" + eDateCalendar.get(Calendar.DAY_OF_MONTH) + 
+                            "&f=" + eDateCalendar.get(Calendar.YEAR) + "&a=" + bDateCalendar.get(Calendar.MONTH) + "&b=" + bDateCalendar.get(Calendar.DAY_OF_MONTH) + 
+                            "&c=" + bDateCalendar.get(Calendar.YEAR) + "&ignore=.csv";
+            
+            URL url = new URL(strURL);
+ 
+            BufferedInputStream bis = new BufferedInputStream(url.openStream());
+            BufferedReader br = new BufferedReader(new InputStreamReader(bis, "ISO-8859-1"));
+            
+            do{
+                content = br.readLine();
+                
+                if(content != null)
+                    csvContent = csvContent + content + "\n";
+            }while(content != null);
+            
+            bis.close();
+            
+            PrintWriter out = new PrintWriter(csvOutputFilename);
+            out.println(csvContent);
+            out.flush();
+            out.close();
+ 
+        } catch (Exception ex){
+            success = false;
+            System.out.println("There has been a problem with yahoo.com service. Exception received: " + ex.getMessage());
+        }
+        
+        return success;
     }
 }
