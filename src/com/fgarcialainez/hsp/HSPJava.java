@@ -1,5 +1,4 @@
 /**
- *
  * HSPJava
  *
  * Created by Felix Garcia Lainez on June 2, 2012
@@ -23,7 +22,6 @@ import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
-import java.lang.String;
 import java.net.URL;
 import java.text.Format;
 import java.text.Normalizer;
@@ -88,10 +86,11 @@ public class HSPJava
     /**
      * Retrieves stock data from yahoo finance in csv format
      * @param ticker Yahoo stock ticker (i.e. SAN.MC, TEF.MC, AAPL, etc)
-     * @param beginDate The begin date with format YYYY/MM/DD
-     * @param endDate The end date with format YYYY/MM/DD
+     * @param beginDate The begin date with format YYYY-MM-DD
+     * @param endDate The end date with format YYYY-MM-DD
      * @param csvOutputFilename The name of the .csv to be created
      * @return true if success, else false
+     * @see http://finance.yahoo.com/
      */
     public static boolean retrieveStockDataFromYahooFinance(String ticker, String beginDate, String endDate, String csvOutputFilename)
     {
@@ -142,5 +141,20 @@ public class HSPJava
         }
         
         return success;
+    }
+    
+    /**
+     * Retrieves last stock data from Google finance
+     * @param ticker The stock ticker
+     * @return A Stock object if success, else null
+     * @see http://www.google.com/finance
+     */
+    public static Stock retrieveLastStockDataFromGoogleFinance(String ticker)
+    {
+        Stock stockData = new Stock();
+        
+        //@TODO - IMPLEMENT
+        
+        return stockData;
     }
 }
