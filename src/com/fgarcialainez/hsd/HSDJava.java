@@ -1,5 +1,5 @@
 /**
- * HSPJava
+ * HSDJava
  *
  * Created by Felix Garcia Lainez on June 2, 2012
  * Copyright 2012 Felix Garcia Lainez
@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.fgarcialainez.hsp;
+package com.fgarcialainez.hsd;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
@@ -33,7 +33,7 @@ import java.util.Date;
  * Class that connects with some external services to retrieve historical stock data
  * @author Felix Garcia Lainez
  */
-public class HSPJava 
+public class HSDJava 
 {
     /**
      * Retrieves stock data from invertia.com in xls format
