@@ -28,6 +28,13 @@ import java.text.Normalizer;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import org.w3c.dom.*;
+import org.xml.sax.InputSource;
+
+
 
 /**
  * Class that connects with some external services to retrieve historical stock data
@@ -77,7 +84,7 @@ public class HSDJava
  
         } catch (Exception ex){
             success = false;
-            System.out.println("There has been a problem with invertia.com service. Exception received: " + ex.getMessage());
+            System.out.println("There has been a problem connecting to invertia.com service. Exception received: " + ex.getMessage());
         }
         
         return success;
@@ -137,7 +144,7 @@ public class HSDJava
  
         } catch (Exception ex){
             success = false;
-            System.out.println("There has been a problem with yahoo.com service. Exception received: " + ex.getMessage());
+            System.out.println("There has been a problem connecting to yahoo.com service. Exception received: " + ex.getMessage());
         }
         
         return success;
@@ -145,15 +152,62 @@ public class HSDJava
     
     /**
      * Retrieves last stock data from Google finance
-     * @param ticker The stock ticker
-     * @return A Stock object if success, else null
+     * @param ticker The stock ticker (i.e. GOOG, AAPL, etc)
+     * @return A Stock HashMap object if success, else null
      * @see http://www.google.com/finance
      */
-    public static Stock retrieveLastStockDataFromGoogleFinance(String ticker)
+    public static HashMap<String, String> retrieveLastStockDataFromGoogleFinance(String ticker)
     {
-        Stock stockData = new Stock();
+        HashMap<String, String> stockData = null;
         
-        //@TODO - IMPLEMENT
+        try
+        {
+            //CONNECT TO GOOGLE FINANCE API AND RETRIEVE DATA
+            String urlStr = "http://www.google.com/ig/api?stock=" + ticker;
+ 
+            URL url = new URL(urlStr);
+ 
+            BufferedInputStream bis = new BufferedInputStream(url.openStream());
+            BufferedReader br = new BufferedReader(new InputStreamReader(bis, "ISO-8859-1"));
+            
+            //PARSE RETRIEVED DATA
+            DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+            Document doc = dBuilder.parse(new InputSource(br));
+            doc.getDocumentElement().normalize();
+
+            NodeList nodes = doc.getElementsByTagName("finance");
+            
+            if(nodes != null && nodes.getLength() > 0)
+            {
+                stockData = new HashMap<String, String>();
+                
+                Node rootNode = nodes.item(0);
+                
+                for(int i = 0; i < rootNode.getChildNodes().getLength(); i++) 
+                {
+                    Node node = rootNode.getChildNodes().item(i);
+
+                    if(node.getNodeType() == Node.ELEMENT_NODE) 
+                    {
+                        Element element = (Element) node;
+                        
+                        NamedNodeMap attributes = element.getAttributes();
+                        Node attribute = attributes.item(0);
+                        
+                        String name = node.getNodeName();
+                        String value = attribute.getNodeValue();
+                        
+                        stockData.put(name, value);
+                    }
+                }
+            }
+            
+            bis.close();
+        } 
+        catch (Exception ex){
+            System.out.println("There has been a problem connecting to google finance service. Exception received: " + ex.getMessage());
+        }
         
         return stockData;
     }

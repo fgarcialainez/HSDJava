@@ -18,6 +18,9 @@
  */
 package com.fgarcialainez.hsd;
 
+import java.util.HashMap;
+import java.util.Set;
+
 /**
  * Main class to test funcionalities implemented on HSDJava
  * @author Felix Garcia Lainez
@@ -46,5 +49,22 @@ public class Main {
         
         //RETRIEVE DATA FROM SANTANDER BETWEEN MARCH 1, 2010 TO MARCH 1, 2011. SAVE OUTPUT DATA ON FILE testSantanderMC.xls
         HSDJava.retrieveStockDataFromYahooFinance("SAN.MC", "2010-03-01", "2011-03-01", "testSantanderMC.csv");
+        
+        //RETRIEVE LATEST GOOGLE STOCK DATA
+        HashMap<String, String> googleResult = HSDJava.retrieveLastStockDataFromGoogleFinance("GOOG");
+        printHasMap(googleResult);
+        
+        //RETRIEVE LATEST APPLE STOCK DATA
+        HashMap<String, String> appleResult = HSDJava.retrieveLastStockDataFromGoogleFinance("AAPL");
+        printHasMap(appleResult);
+    }
+    
+    private static void printHasMap(HashMap<String, String> hashmap)
+    {
+        System.out.println("\n================================================");
+        Set<String> keySet = hashmap.keySet();
+        
+        for(String key : keySet)
+            System.out.println("Attribute Name: " + key + " , Attribute Value: " + hashmap.get(key));
     }
 }
